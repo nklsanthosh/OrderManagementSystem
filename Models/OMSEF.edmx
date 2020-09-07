@@ -1,0 +1,645 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="OMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CustomerDetails">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="CustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerAge" Type="int" />
+          <Property Name="CustomerGender" Type="char" MaxLength="10" />
+          <Property Name="CustomerPhone" Type="int" Nullable="false" />
+          <Property Name="CustomerEmail" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderDetails">
+          <Key>
+            <PropertyRef Name="OrderDetailsId" />
+          </Key>
+          <Property Name="OrderDetailsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderMasterId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderMaster">
+          <Key>
+            <PropertyRef Name="OrderMasterId" />
+          </Key>
+          <Property Name="OrderMasterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderStatusId" Type="int" Nullable="false" />
+          <Property Name="AddressId" Type="int" Nullable="false" />
+          <Property Name="Total_Amount" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="OrderedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderStatus">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="nchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductDetails">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Height" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Image" Type="varbinary(max)" />
+          <Property Name="SKU" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Barcode" Type="varchar" MaxLength="50" />
+          <Property Name="AvailableQuantity" Type="int" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShippingAddress">
+          <Key>
+            <PropertyRef Name="AddressID" />
+          </Key>
+          <Property Name="AddressID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Address1" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Address2" Type="nvarchar" MaxLength="50" />
+          <Property Name="City" Type="nchar" MaxLength="25" Nullable="false" />
+          <Property Name="State" Type="nchar" MaxLength="25" Nullable="false" />
+          <Property Name="PinCode" Type="int" />
+          <Property Name="CustomerId" Type="int" />
+        </EntityType>
+        <EntityType Name="Table_1">
+          <Key>
+            <PropertyRef Name="OrderDetailsId" />
+          </Key>
+          <Property Name="OrderDetailsId" Type="int" Nullable="false" />
+          <Property Name="OrderMasterId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="25" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_CustomerDetails_UserRole">
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="1" />
+          <End Role="CustomerDetails" Type="Self.CustomerDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="CustomerDetails">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_OrderDetails">
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
+          <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderMaster">
+              <PropertyRef Name="OrderMasterId" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="OrderMasterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_ProductDetails">
+          <End Role="ProductDetails" Type="Self.ProductDetails" Multiplicity="1" />
+          <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductDetails">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderMaster_OrderStatus">
+          <End Role="OrderStatus" Type="Self.OrderStatus" Multiplicity="1" />
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderStatus">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="OrderMaster">
+              <PropertyRef Name="OrderStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderMaster_ShippingAddress">
+          <End Role="ShippingAddress" Type="Self.ShippingAddress" Multiplicity="1" />
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShippingAddress">
+              <PropertyRef Name="AddressID" />
+            </Principal>
+            <Dependent Role="OrderMaster">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShippingAddress_CustomerDetails">
+          <End Role="CustomerDetails" Type="Self.CustomerDetails" Multiplicity="1" />
+          <End Role="ShippingAddress" Type="Self.ShippingAddress" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerDetails">
+              <PropertyRef Name="CustomerId" />
+            </Principal>
+            <Dependent Role="ShippingAddress">
+              <PropertyRef Name="AddressID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Table_1_OrderMaster">
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
+          <End Role="Table_1" Type="Self.Table_1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderMaster">
+              <PropertyRef Name="OrderMasterId" />
+            </Principal>
+            <Dependent Role="Table_1">
+              <PropertyRef Name="OrderMasterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Table_1_ProductDetails">
+          <End Role="ProductDetails" Type="Self.ProductDetails" Multiplicity="1" />
+          <End Role="Table_1" Type="Self.Table_1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductDetails">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Table_1">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="CreateCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="customerName" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerAge" Type="int" Mode="In" />
+          <Parameter Name="CustomerGender" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerPhone" Type="int" Mode="In" />
+          <Parameter Name="CustomerEmail" Type="nvarchar" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar" Mode="In" />
+          <Parameter Name="UserRoleId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="createorder" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderDate" Type="date" Mode="In" />
+          <Parameter Name="AddressId" Type="int" Mode="In" />
+          <Parameter Name="Total_Amount" Type="decimal" Mode="In" />
+          <Parameter Name="OrderMasterId" Type="int" Mode="InOut" />
+        </Function>
+        <Function Name="createorderdetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderMasterId" Type="int" Mode="In" />
+          <Parameter Name="ProductId" Type="int" Mode="In" />
+          <Parameter Name="Quantity" Type="int" Mode="In" />
+          <Parameter Name="Price" Type="decimal" Mode="In" />
+        </Function>
+        <EntityContainer Name="OMSModelStoreContainer">
+          <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderMaster" EntityType="Self.OrderMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderStatus" EntityType="Self.OrderStatus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductDetails" EntityType="Self.ProductDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShippingAddress" EntityType="Self.ShippingAddress" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Table_1" EntityType="Self.Table_1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CustomerDetails_UserRole" Association="Self.FK_CustomerDetails_UserRole">
+            <End Role="UserRole" EntitySet="UserRole" />
+            <End Role="CustomerDetails" EntitySet="CustomerDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_OrderDetails" Association="Self.FK_OrderDetails_OrderDetails">
+            <End Role="OrderMaster" EntitySet="OrderMaster" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_ProductDetails" Association="Self.FK_OrderDetails_ProductDetails">
+            <End Role="ProductDetails" EntitySet="ProductDetails" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderMaster_OrderStatus" Association="Self.FK_OrderMaster_OrderStatus">
+            <End Role="OrderStatus" EntitySet="OrderStatus" />
+            <End Role="OrderMaster" EntitySet="OrderMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderMaster_ShippingAddress" Association="Self.FK_OrderMaster_ShippingAddress">
+            <End Role="ShippingAddress" EntitySet="ShippingAddress" />
+            <End Role="OrderMaster" EntitySet="OrderMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShippingAddress_CustomerDetails" Association="Self.FK_ShippingAddress_CustomerDetails">
+            <End Role="CustomerDetails" EntitySet="CustomerDetails" />
+            <End Role="ShippingAddress" EntitySet="ShippingAddress" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Table_1_OrderMaster" Association="Self.FK_Table_1_OrderMaster">
+            <End Role="OrderMaster" EntitySet="OrderMaster" />
+            <End Role="Table_1" EntitySet="Table_1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Table_1_ProductDetails" Association="Self.FK_Table_1_ProductDetails">
+            <End Role="ProductDetails" EntitySet="ProductDetails" />
+            <End Role="Table_1" EntitySet="Table_1" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="OMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CustomerDetail">
+          <Key>
+            <PropertyRef Name="CustomerId" />
+          </Key>
+          <Property Name="CustomerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CustomerAge" Type="Int32" />
+          <Property Name="CustomerGender" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="CustomerPhone" Type="Int32" Nullable="false" />
+          <Property Name="CustomerEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="UserRole" Relationship="Self.FK_CustomerDetails_UserRole" FromRole="CustomerDetails" ToRole="UserRole" />
+          <NavigationProperty Name="ShippingAddress" Relationship="Self.FK_ShippingAddress_CustomerDetails" FromRole="CustomerDetails" ToRole="ShippingAddress" />
+        </EntityType>
+        <EntityType Name="OrderDetail">
+          <Key>
+            <PropertyRef Name="OrderDetailsId" />
+          </Key>
+          <Property Name="OrderDetailsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderMasterId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="OrderMaster" Relationship="Self.FK_OrderDetails_OrderDetails" FromRole="OrderDetails" ToRole="OrderMaster" />
+          <NavigationProperty Name="ProductDetail" Relationship="Self.FK_OrderDetails_ProductDetails" FromRole="OrderDetails" ToRole="ProductDetails" />
+        </EntityType>
+        <EntityType Name="OrderMaster">
+          <Key>
+            <PropertyRef Name="OrderMasterId" />
+          </Key>
+          <Property Name="OrderMasterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderStatusId" Type="Int32" Nullable="false" />
+          <Property Name="AddressId" Type="Int32" Nullable="false" />
+          <Property Name="Total_Amount" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <NavigationProperty Name="OrderDetails" Relationship="Self.FK_OrderDetails_OrderDetails" FromRole="OrderMaster" ToRole="OrderDetails" />
+          <NavigationProperty Name="OrderStatu" Relationship="Self.FK_OrderMaster_OrderStatus" FromRole="OrderMaster" ToRole="OrderStatus" />
+          <NavigationProperty Name="ShippingAddress" Relationship="Self.FK_OrderMaster_ShippingAddress" FromRole="OrderMaster" ToRole="ShippingAddress" />
+          <Property Name="OrderedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Table_1" Relationship="OMSModel.FK_Table_1_OrderMaster" FromRole="OrderMaster" ToRole="Table_1" />
+        </EntityType>
+        <EntityType Name="OrderStatu">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="OrderMasters" Relationship="Self.FK_OrderMaster_OrderStatus" FromRole="OrderStatus" ToRole="OrderMaster" />
+        </EntityType>
+        <EntityType Name="ProductDetail">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Weight" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Height" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="SKU" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Barcode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AvailableQuantity" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="OrderDetails" Relationship="Self.FK_OrderDetails_ProductDetails" FromRole="ProductDetails" ToRole="OrderDetails" />
+          <NavigationProperty Name="Table_1" Relationship="OMSModel.FK_Table_1_ProductDetails" FromRole="ProductDetail" ToRole="Table_1" />
+        </EntityType>
+        <EntityType Name="ShippingAddress">
+          <Key>
+            <PropertyRef Name="AddressID" />
+          </Key>
+          <Property Name="AddressID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Address1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="25" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="State" Type="String" MaxLength="25" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="PinCode" Type="Int32" />
+          <Property Name="CustomerId" Type="Int32" />
+          <NavigationProperty Name="CustomerDetail" Relationship="Self.FK_ShippingAddress_CustomerDetails" FromRole="ShippingAddress" ToRole="CustomerDetails" />
+          <NavigationProperty Name="OrderMasters" Relationship="Self.FK_OrderMaster_ShippingAddress" FromRole="ShippingAddress" ToRole="OrderMaster" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="25" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CustomerDetails" Relationship="Self.FK_CustomerDetails_UserRole" FromRole="UserRole" ToRole="CustomerDetails" />
+        </EntityType>
+        <Association Name="FK_CustomerDetails_UserRole">
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="1" />
+          <End Role="CustomerDetails" Type="Self.CustomerDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="CustomerDetails">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShippingAddress_CustomerDetails">
+          <End Role="CustomerDetails" Type="Self.CustomerDetail" Multiplicity="1" />
+          <End Role="ShippingAddress" Type="Self.ShippingAddress" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerDetails">
+              <PropertyRef Name="CustomerId" />
+            </Principal>
+            <Dependent Role="ShippingAddress">
+              <PropertyRef Name="AddressID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_OrderDetails">
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
+          <End Role="OrderDetails" Type="Self.OrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderMaster">
+              <PropertyRef Name="OrderMasterId" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="OrderMasterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetails_ProductDetails">
+          <End Role="ProductDetails" Type="Self.ProductDetail" Multiplicity="1" />
+          <End Role="OrderDetails" Type="Self.OrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductDetails">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="OrderDetails">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderMaster_OrderStatus">
+          <End Role="OrderStatus" Type="Self.OrderStatu" Multiplicity="1" />
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderStatus">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="OrderMaster">
+              <PropertyRef Name="OrderStatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderMaster_ShippingAddress">
+          <End Role="ShippingAddress" Type="Self.ShippingAddress" Multiplicity="1" />
+          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShippingAddress">
+              <PropertyRef Name="AddressID" />
+            </Principal>
+            <Dependent Role="OrderMaster">
+              <PropertyRef Name="AddressId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OMSEF" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetail" />
+          <EntitySet Name="OrderDetails" EntityType="Self.OrderDetail" />
+          <EntitySet Name="OrderMasters" EntityType="Self.OrderMaster" />
+          <EntitySet Name="OrderStatus" EntityType="Self.OrderStatu" />
+          <EntitySet Name="ProductDetails" EntityType="Self.ProductDetail" />
+          <EntitySet Name="ShippingAddresses" EntityType="Self.ShippingAddress" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRole" />
+          <AssociationSet Name="FK_CustomerDetails_UserRole" Association="Self.FK_CustomerDetails_UserRole">
+            <End Role="UserRole" EntitySet="UserRoles" />
+            <End Role="CustomerDetails" EntitySet="CustomerDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShippingAddress_CustomerDetails" Association="Self.FK_ShippingAddress_CustomerDetails">
+            <End Role="CustomerDetails" EntitySet="CustomerDetails" />
+            <End Role="ShippingAddress" EntitySet="ShippingAddresses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_OrderDetails" Association="Self.FK_OrderDetails_OrderDetails">
+            <End Role="OrderMaster" EntitySet="OrderMasters" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetails_ProductDetails" Association="Self.FK_OrderDetails_ProductDetails">
+            <End Role="ProductDetails" EntitySet="ProductDetails" />
+            <End Role="OrderDetails" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderMaster_OrderStatus" Association="Self.FK_OrderMaster_OrderStatus">
+            <End Role="OrderStatus" EntitySet="OrderStatus" />
+            <End Role="OrderMaster" EntitySet="OrderMasters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderMaster_ShippingAddress" Association="Self.FK_OrderMaster_ShippingAddress">
+            <End Role="ShippingAddress" EntitySet="ShippingAddresses" />
+            <End Role="OrderMaster" EntitySet="OrderMasters" />
+          </AssociationSet>
+          <FunctionImport Name="CreateCustomer" EntitySet="CustomerDetails" ReturnType="Collection(OMSModel.CustomerDetail)">
+            <Parameter Name="customerName" Mode="In" Type="String" />
+            <Parameter Name="CustomerAge" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerGender" Mode="In" Type="String" />
+            <Parameter Name="CustomerPhone" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerEmail" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="UserRoleId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CreateCustomer1">
+            <Parameter Name="customerName" Mode="In" Type="String" />
+            <Parameter Name="CustomerAge" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerGender" Mode="In" Type="String" />
+            <Parameter Name="CustomerPhone" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerEmail" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="UserRoleId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Table_1" EntityType="OMSModel.Table_1" />
+          <AssociationSet Name="FK_Table_1_OrderMaster" Association="OMSModel.FK_Table_1_OrderMaster">
+            <End Role="OrderMaster" EntitySet="OrderMasters" />
+            <End Role="Table_1" EntitySet="Table_1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Table_1_ProductDetails" Association="OMSModel.FK_Table_1_ProductDetails">
+            <End Role="ProductDetail" EntitySet="ProductDetails" />
+            <End Role="Table_1" EntitySet="Table_1" />
+          </AssociationSet>
+          <FunctionImport Name="createorder">
+            <Parameter Name="OrderDate" Mode="In" Type="DateTime" />
+            <Parameter Name="AddressId" Mode="In" Type="Int32" />
+            <Parameter Name="Total_Amount" Mode="In" Type="Decimal" />
+            <Parameter Name="OrderMasterId" Mode="InOut" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="createorderdetail">
+            <Parameter Name="OrderMasterId" Mode="In" Type="Int32" />
+            <Parameter Name="ProductId" Mode="In" Type="Int32" />
+            <Parameter Name="Quantity" Mode="In" Type="Int32" />
+            <Parameter Name="Price" Mode="In" Type="Decimal" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="Table_1">
+          <Key>
+            <PropertyRef Name="OrderDetailsId" />
+          </Key>
+          <Property Name="OrderDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="OrderMasterId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <NavigationProperty Name="OrderMaster" Relationship="OMSModel.FK_Table_1_OrderMaster" FromRole="Table_1" ToRole="OrderMaster" />
+          <NavigationProperty Name="ProductDetail" Relationship="OMSModel.FK_Table_1_ProductDetails" FromRole="Table_1" ToRole="ProductDetail" />
+        </EntityType>
+        <Association Name="FK_Table_1_OrderMaster">
+          <End Type="OMSModel.OrderMaster" Role="OrderMaster" Multiplicity="1" />
+          <End Type="OMSModel.Table_1" Role="Table_1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderMaster">
+              <PropertyRef Name="OrderMasterId" />
+            </Principal>
+            <Dependent Role="Table_1">
+              <PropertyRef Name="OrderMasterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Table_1_ProductDetails">
+          <End Type="OMSModel.ProductDetail" Role="ProductDetail" Multiplicity="1" />
+          <End Type="OMSModel.Table_1" Role="Table_1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductDetail">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Table_1">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="OMSModelStoreContainer" CdmEntityContainer="OMSEF">
+          <EntitySetMapping Name="CustomerDetails">
+            <EntityTypeMapping TypeName="OMSModel.CustomerDetail">
+              <MappingFragment StoreEntitySet="CustomerDetails">
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CustomerAge" ColumnName="CustomerAge" />
+                <ScalarProperty Name="CustomerGender" ColumnName="CustomerGender" />
+                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
+                <ScalarProperty Name="CustomerEmail" ColumnName="CustomerEmail" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderDetails">
+            <EntityTypeMapping TypeName="OMSModel.OrderDetail">
+              <MappingFragment StoreEntitySet="OrderDetails">
+                <ScalarProperty Name="OrderDetailsId" ColumnName="OrderDetailsId" />
+                <ScalarProperty Name="OrderMasterId" ColumnName="OrderMasterId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderMasters">
+            <EntityTypeMapping TypeName="OMSModel.OrderMaster">
+              <MappingFragment StoreEntitySet="OrderMaster">
+                <ScalarProperty Name="OrderedDate" ColumnName="OrderedDate" />
+                <ScalarProperty Name="OrderMasterId" ColumnName="OrderMasterId" />
+                <ScalarProperty Name="OrderStatusId" ColumnName="OrderStatusId" />
+                <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+                <ScalarProperty Name="Total_Amount" ColumnName="Total_Amount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderStatus">
+            <EntityTypeMapping TypeName="OMSModel.OrderStatu">
+              <MappingFragment StoreEntitySet="OrderStatus">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductDetails">
+            <EntityTypeMapping TypeName="OMSModel.ProductDetail">
+              <MappingFragment StoreEntitySet="ProductDetails">
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Height" ColumnName="Height" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="AvailableQuantity" ColumnName="AvailableQuantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShippingAddresses">
+            <EntityTypeMapping TypeName="OMSModel.ShippingAddress">
+              <MappingFragment StoreEntitySet="ShippingAddress">
+                <ScalarProperty Name="AddressID" ColumnName="AddressID" />
+                <ScalarProperty Name="Address1" ColumnName="Address1" />
+                <ScalarProperty Name="Address2" ColumnName="Address2" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="PinCode" ColumnName="PinCode" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="OMSModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRole">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CreateCustomer1" FunctionName="OMSModel.Store.CreateCustomer" />
+          <FunctionImportMapping FunctionImportName="CreateCustomer" FunctionName="OMSModel.Store.CreateCustomer" />
+          <EntitySetMapping Name="Table_1">
+            <EntityTypeMapping TypeName="OMSModel.Table_1">
+              <MappingFragment StoreEntitySet="Table_1">
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="OrderMasterId" ColumnName="OrderMasterId" />
+                <ScalarProperty Name="OrderDetailsId" ColumnName="OrderDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="createorder" FunctionName="OMSModel.Store.createorder" />
+          <FunctionImportMapping FunctionImportName="createorderdetail" FunctionName="OMSModel.Store.createorderdetail" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
