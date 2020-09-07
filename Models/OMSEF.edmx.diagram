@@ -18,10 +18,7 @@
         <AssociationConnector Association="OMSModel.FK_OrderDetails_ProductDetails" ManuallyRouted="false" />
         <AssociationConnector Association="OMSModel.FK_OrderMaster_OrderStatus" ManuallyRouted="false" />
         <AssociationConnector Association="OMSModel.FK_OrderMaster_ShippingAddress" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="OMSModel.Table_1" Width="1.5" PointX="9.75" PointY="4.5" />
-        <AssociationConnector Association="OMSModel.FK_Table_1_OrderMaster" />
-        <AssociationConnector Association="OMSModel.FK_Table_1_ProductDetails" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

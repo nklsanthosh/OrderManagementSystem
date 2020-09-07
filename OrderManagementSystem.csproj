@@ -233,9 +233,6 @@
       <DependentUpon>OMSEF.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShippingAddresses.cs" />
-    <Compile Include="Models\Table_1.cs">
-      <DependentUpon>OMSEF.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\UserRole.cs">
       <DependentUpon>OMSEF.tt</DependentUpon>
     </Compile>

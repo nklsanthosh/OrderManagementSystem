@@ -71,16 +71,6 @@
           <Property Name="PinCode" Type="int" />
           <Property Name="CustomerId" Type="int" />
         </EntityType>
-        <EntityType Name="Table_1">
-          <Key>
-            <PropertyRef Name="OrderDetailsId" />
-          </Key>
-          <Property Name="OrderDetailsId" Type="int" Nullable="false" />
-          <Property Name="OrderMasterId" Type="int" Nullable="false" />
-          <Property Name="ProductId" Type="int" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
-        </EntityType>
         <EntityType Name="UserRole">
           <Key>
             <PropertyRef Name="RoleId" />
@@ -160,30 +150,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Table_1_OrderMaster">
-          <End Role="OrderMaster" Type="Self.OrderMaster" Multiplicity="1" />
-          <End Role="Table_1" Type="Self.Table_1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="OrderMaster">
-              <PropertyRef Name="OrderMasterId" />
-            </Principal>
-            <Dependent Role="Table_1">
-              <PropertyRef Name="OrderMasterId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Table_1_ProductDetails">
-          <End Role="ProductDetails" Type="Self.ProductDetails" Multiplicity="1" />
-          <End Role="Table_1" Type="Self.Table_1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductDetails">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="Table_1">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Function Name="CreateCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="customerName" Type="nvarchar" Mode="In" />
           <Parameter Name="CustomerAge" Type="int" Mode="In" />
@@ -212,7 +178,6 @@
           <EntitySet Name="OrderStatus" EntityType="Self.OrderStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductDetails" EntityType="Self.ProductDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShippingAddress" EntityType="Self.ShippingAddress" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Table_1" EntityType="Self.Table_1" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_CustomerDetails_UserRole" Association="Self.FK_CustomerDetails_UserRole">
             <End Role="UserRole" EntitySet="UserRole" />
@@ -237,14 +202,6 @@
           <AssociationSet Name="FK_ShippingAddress_CustomerDetails" Association="Self.FK_ShippingAddress_CustomerDetails">
             <End Role="CustomerDetails" EntitySet="CustomerDetails" />
             <End Role="ShippingAddress" EntitySet="ShippingAddress" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Table_1_OrderMaster" Association="Self.FK_Table_1_OrderMaster">
-            <End Role="OrderMaster" EntitySet="OrderMaster" />
-            <End Role="Table_1" EntitySet="Table_1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Table_1_ProductDetails" Association="Self.FK_Table_1_ProductDetails">
-            <End Role="ProductDetails" EntitySet="ProductDetails" />
-            <End Role="Table_1" EntitySet="Table_1" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -290,7 +247,6 @@
           <NavigationProperty Name="OrderStatu" Relationship="Self.FK_OrderMaster_OrderStatus" FromRole="OrderMaster" ToRole="OrderStatus" />
           <NavigationProperty Name="ShippingAddress" Relationship="Self.FK_OrderMaster_ShippingAddress" FromRole="OrderMaster" ToRole="ShippingAddress" />
           <Property Name="OrderedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Table_1" Relationship="OMSModel.FK_Table_1_OrderMaster" FromRole="OrderMaster" ToRole="Table_1" />
         </EntityType>
         <EntityType Name="OrderStatu">
           <Key>
@@ -314,7 +270,6 @@
           <Property Name="AvailableQuantity" Type="Int32" Nullable="false" />
           <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
           <NavigationProperty Name="OrderDetails" Relationship="Self.FK_OrderDetails_ProductDetails" FromRole="ProductDetails" ToRole="OrderDetails" />
-          <NavigationProperty Name="Table_1" Relationship="OMSModel.FK_Table_1_ProductDetails" FromRole="ProductDetail" ToRole="Table_1" />
         </EntityType>
         <EntityType Name="ShippingAddress">
           <Key>
@@ -460,15 +415,6 @@
             <Parameter Name="Password" Mode="In" Type="String" />
             <Parameter Name="UserRoleId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <EntitySet Name="Table_1" EntityType="OMSModel.Table_1" />
-          <AssociationSet Name="FK_Table_1_OrderMaster" Association="OMSModel.FK_Table_1_OrderMaster">
-            <End Role="OrderMaster" EntitySet="OrderMasters" />
-            <End Role="Table_1" EntitySet="Table_1" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Table_1_ProductDetails" Association="OMSModel.FK_Table_1_ProductDetails">
-            <End Role="ProductDetail" EntitySet="ProductDetails" />
-            <End Role="Table_1" EntitySet="Table_1" />
-          </AssociationSet>
           <FunctionImport Name="createorder">
             <Parameter Name="OrderDate" Mode="In" Type="DateTime" />
             <Parameter Name="AddressId" Mode="In" Type="Int32" />
@@ -482,43 +428,7 @@
             <Parameter Name="Price" Mode="In" Type="Decimal" />
           </FunctionImport>
         </EntityContainer>
-        <EntityType Name="Table_1">
-          <Key>
-            <PropertyRef Name="OrderDetailsId" />
-          </Key>
-          <Property Name="OrderDetailsId" Type="Int32" Nullable="false" />
-          <Property Name="OrderMasterId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
-          <NavigationProperty Name="OrderMaster" Relationship="OMSModel.FK_Table_1_OrderMaster" FromRole="Table_1" ToRole="OrderMaster" />
-          <NavigationProperty Name="ProductDetail" Relationship="OMSModel.FK_Table_1_ProductDetails" FromRole="Table_1" ToRole="ProductDetail" />
-        </EntityType>
-        <Association Name="FK_Table_1_OrderMaster">
-          <End Type="OMSModel.OrderMaster" Role="OrderMaster" Multiplicity="1" />
-          <End Type="OMSModel.Table_1" Role="Table_1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="OrderMaster">
-              <PropertyRef Name="OrderMasterId" />
-            </Principal>
-            <Dependent Role="Table_1">
-              <PropertyRef Name="OrderMasterId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Table_1_ProductDetails">
-          <End Type="OMSModel.ProductDetail" Role="ProductDetail" Multiplicity="1" />
-          <End Type="OMSModel.Table_1" Role="Table_1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProductDetail">
-              <PropertyRef Name="ProductId" />
-            </Principal>
-            <Dependent Role="Table_1">
-              <PropertyRef Name="ProductId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -606,17 +516,6 @@
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="CreateCustomer1" FunctionName="OMSModel.Store.CreateCustomer" />
           <FunctionImportMapping FunctionImportName="CreateCustomer" FunctionName="OMSModel.Store.CreateCustomer" />
-          <EntitySetMapping Name="Table_1">
-            <EntityTypeMapping TypeName="OMSModel.Table_1">
-              <MappingFragment StoreEntitySet="Table_1">
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="OrderMasterId" ColumnName="OrderMasterId" />
-                <ScalarProperty Name="OrderDetailsId" ColumnName="OrderDetailsId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="createorder" FunctionName="OMSModel.Store.createorder" />
           <FunctionImportMapping FunctionImportName="createorderdetail" FunctionName="OMSModel.Store.createorderdetail" />
         </EntityContainerMapping>

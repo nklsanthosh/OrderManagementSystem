@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Net;
 using System.Net.Mail;
 using System.Web.Http;
 
@@ -44,19 +45,14 @@ namespace OrderManagementSystem.Controllers
             SaveCalculation saveCalculation = new SaveCalculation();
             saveCalculation.totalPriceCalculation(orderMaster);
             orderMaster.orderDate = DateTime.Now;
+            bool orderCreated = false;
 
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["OMS"].ToString()))
             {
                 connection.Open();
                 SqlCommand testCMD = new SqlCommand("createorder", connection);
                 testCMD.CommandType = CommandType.StoredProcedure;
-                //List<SqlParameter> sp = new List<SqlParameter>()
-                //    {
-                //        new SqlParameter() {ParameterName = "@OrderDate", SqlDbType = SqlDbType.DateTime, 50, Value= orderMaster.orderDate},
-                //        new SqlParameter() {ParameterName = "@AddressId", SqlDbType = SqlDbType.Int, 10,Value = orderMaster.addressId},
-                //        new SqlParameter() {ParameterName = "@Total_Amount", SqlDbType = SqlDbType.Decimal, Value = orderMaster.totalPrice},
-                //        new SqlParameter() {ParameterName = "@OrderMasterId", SqlDbType = SqlDbType.Int, Value = orderMaster.orderId , Direction= ParameterDirection.Output}
-                //    };
+
 
                 testCMD.Parameters.Add(new SqlParameter("@OrderDate", System.Data.SqlDbType.VarChar, 50) { Value = orderMaster.orderDate });
                 testCMD.Parameters.Add(new SqlParameter("@AddressId", System.Data.SqlDbType.VarChar, 50) { Value = orderMaster.addressId });
@@ -73,13 +69,7 @@ namespace OrderManagementSystem.Controllers
                 {
                     SqlCommand testCMD1 = new SqlCommand("createorderdetail", connection);
                     testCMD1.CommandType = CommandType.StoredProcedure;
-                    //List<SqlParameter> sp1 = new List<SqlParameter>()
-                    //{
-                    //    new SqlParameter() {ParameterName = "@OrderMasterId", SqlDbType = SqlDbType.NVarChar, Value= orderMaster.orderId},
-                    //    new SqlParameter() {ParameterName = "@ProductId", SqlDbType = SqlDbType.NVarChar, Value = i.productid},
-                    //    new SqlParameter() {ParameterName = "@Quantity", SqlDbType = SqlDbType.NVarChar, Value = i.quantity},
-                    //    new SqlParameter() {ParameterName = "@Price", SqlDbType = SqlDbType.Int, Value = i.quantity }
-                    //};
+
 
                     testCMD1.Parameters.Add(new SqlParameter("@OrderMasterId", System.Data.SqlDbType.VarChar, 50) { Value = orderMaster.orderId });
                     testCMD1.Parameters.Add(new SqlParameter("@ProductId", System.Data.SqlDbType.VarChar, 50) { Value = i.productid });
@@ -89,47 +79,52 @@ namespace OrderManagementSystem.Controllers
                     testCMD1.ExecuteNonQuery();
                 }
 
-
+                orderCreated = SendMail("Order Number :" + orderMaster.orderId + " is Created on " + DateTime.Now);
             }
 
-            SmtpClient client = new SmtpClient();
+            if (orderCreated)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
-            MailAddress from = new MailAddress("nklsanthosh143@gmail.com",
-               "Jane " + (char)0xD8 + " Clayton",
-            System.Text.Encoding.UTF8);
-            // Set destinations for the email message.
-            MailAddress to = new MailAddress("nklsanthosh143@gmail.com");
-            // Specify the message content.
-            MailMessage message = new MailMessage(from, to);
-            message.Body = "This is a test email message sent by an application. ";
-            // Include some non-ASCII characters in body and subject.
-            string someArrows = new string(new char[] { '\u2190', '\u2191', '\u2192', '\u2193' });
-            //message.Body += Environment.NewLine + someArrows;
-            //message.BodyEncoding = System.Text.Encoding.UTF8;
-            //message.Subject = "test message 1" + someArrows;
-            //message.SubjectEncoding = System.Text.Encoding.UTF8;
-            //// Set the method that is called back when the send operation ends.
-            //client.SendCompleted += new
-            //SendCompletedEventHandler(SendCompletedCallback);
-            //// The userState can be any object that allows your callback
-            //// method to identify this send operation.
-            //// For this example, the userToken is a string constant.
-            //string userState = "test message1";
-            //client.SendAsync(message, userState);
-            //Console.WriteLine("Sending message... press c to cancel mail. Press any other key to exit.");
-            //string answer = Console.ReadLine();
-            //// If the user canceled the send, and mail hasn't been sent yet,
-            //// then cancel the pending operation.
-            //if (answer.StartsWith("c") && mailSent == false)
-            //{
-            //    client.SendAsyncCancel();
-            //}
-            //// Clean up.
-            //message.Dispose();
-            //Console.WriteLine("Goodbye.");
+        private static bool SendMail(string body)
+        {
+            bool mailSent = false;
+            string message = DateTime.Now + " In SendMail\n";
 
+            using (MailMessage mm = new MailMessage())
+            {
+                mm.From = new MailAddress(Convert.ToString(ConfigurationManager.AppSettings["From"]));
+                string[] _toAddress = Convert.ToString(ConfigurationManager.AppSettings["To"]).Split(';');
+                foreach (string address in _toAddress)
+                {
+                    mm.To.Add(address);
+                }
+                mm.Subject = ConfigurationManager.AppSettings["Subject"];
+                mm.Body = body;
+                mm.IsBodyHtml = false;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = ConfigurationManager.AppSettings["Host"];
+                smtp.EnableSsl = true;
+                NetworkCredential NetworkCred = new NetworkCredential(ConfigurationManager.AppSettings["Username"],
+                    ConfigurationManager.AppSettings["Password"]);
+                smtp.UseDefaultCredentials = true;
+                smtp.Credentials = NetworkCred;
+                smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]);
 
-            return Ok();
+                message = DateTime.Now + " Sending Mail\n";
+                smtp.Send(mm);
+                message = DateTime.Now + " Mail Sent\n";
+
+                System.Threading.Thread.Sleep(3000);
+                mailSent = true;
+            }
+            return mailSent;
         }
 
         [Route("api/Order/deleteOrder")]

@@ -34,7 +34,6 @@ namespace OrderManagementSystem.Models
         public virtual DbSet<ProductDetail> ProductDetails { get; set; }
         public virtual DbSet<ShippingAddress> ShippingAddresses { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
-        public virtual DbSet<Table_1> Table_1 { get; set; }
     
         public virtual ObjectResult<CustomerDetail> CreateCustomer(string customerName, Nullable<int> customerAge, string customerGender, Nullable<int> customerPhone, string customerEmail, string password, Nullable<int> userRoleId)
         {
